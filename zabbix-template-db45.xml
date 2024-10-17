@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>6.0</version>
+    <date>2024-10-17T12:00:00Z</date>
+    <groups>
+        <group>
+            <uuid>d7755632ebd94690a076e05733f913db</uuid>
+            <name>FM RADIO</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <uuid>36c243a41df24c05bdb932b9f0a67286</uuid>
+            <template>DEVA-DB45_Templates</template>
+            <name>[TEMPLATES] DEVA DB45</name>
+            <description>## Description
+
+Template for SNMP-enabled FM Radio Monitoring Receiver Deva DB45.
+
+This template enables real-time monitoring of key metrics, including RF level, audio quality, RDS parameters, and temperature. 
+It's ideal for broadcast engineers who need reliable oversight of their broadcast system. 
+Compatible with Zabbix 6.0+</description>
+            <groups>
+                <group>
+                    <name>FM RADIO/name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>bc14250c12d24a2a85d0b4b5567b6be7</uuid>
+                    <name>[Tuner] Frequency</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.1.0</snmp_oid>
+                    <key>DB45.Freq</key>
+                    <history>10d</history>
+                    <trends>90d</trends>
+                    <value_type>FLOAT</value_type>
+                    <units>MHz</units>
+                    <description>Frequency in MHz</description>
+                    <preprocessing>
+                        <step>
+                            <type>MULTIPLIER</type>
+                            <parameters>
+                                <parameter>0.001</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <uuid>46e7b10043104ea7a7c41b3365b236f5</uuid>
+                            <expression>last(/DEVA-DB45_Templates/DB45.Freq)&lt;&gt;100.1</expression>
+                            <name>RF FREQUENCY</name>
+                            <priority>INFO</priority>
+                            <description>Change frequency for trigger</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>6e7e17b4d14c4a5389c2e26974796811</uuid>
+                    <name>[Audio] LVL Left Channel</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.20.0</snmp_oid>
+                    <key>DB45.LeftValueAvr</key>
+                    <delay>30s</delay>
+                    <trends>0</trends>
+                    <value_type>FLOAT</value_type>
+                    <units>dBFs</units>
+                    <description>Audio signal from Left channel</description>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>return Math.round((value / 256) * 100) / 100;</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <tags>
+                        <tag>
+                            <tag>FM MONITORING</tag>
+                            <value>Audio Signal</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>84d8ae6fd0a74f07a7f861619c64d95c</uuid>
+                    <name>[Audio] Loudness</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.49.0</snmp_oid>
+                    <key>DB45.Loundness.Momentary</key>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <value_type>FLOAT</value_type>
+                    <units>LUFS</units>
+                    <description>Loudness Momentary Value</description>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>return Math.round((value / 256) * 100) / 100;</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <uuid>132a7e5d6b5c4b1182a886d43a6b61e6</uuid>
+                    <name>[Tuner] MultiPath</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.6.0</snmp_oid>
+                    <key>DB45.MPathAVR</key>
+                    <trends>0</trends>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>Multipath value
+If &gt;10% is Dirty signal</description>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>return Math.round((value / 256) * 100) / 100;</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <uuid>e4697c5fedf0422e9fd59b078ad3a3b9</uuid>
+                            <expression>last(/DEVA-DB45_Templates/DB45.MPathAVR)&gt;=10</expression>
+                            <name>MULTIPATH</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>57aeb2a9b2b44798ac35873c68cf154d</uuid>
+                    <name>[Audio] MPX Deviation</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.8.0</snmp_oid>
+                    <key>DB45.MPX.Deviation</key>
+                    <delay>15s</delay>
+                    <trends>0</trends>
+                    <value_type>FLOAT</value_type>
+                    <units>kHz</units>
+                    <description>MPX Deviation
+Standard is 75kHz</description>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>return Math.round((value / 256) * 100) / 100;</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <uuid>968641ddc245445788cafc86bd46aea5</uuid>
+                    <name>[Tuner] Pilot Level</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.14.0</snmp_oid>
+                    <key>DB45.Pilot.LVL</key>
+                    <trends>0</trends>
+                    <value_type>FLOAT</value_type>
+                    <units>kHz</units>
+                    <description>Pilot Tone 19kHz.
+Standard is 6.7kHz</description>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>return Math.round((value / 256) * 100) / 100;</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <uuid>c204c64f24fc4901983f1c151e855a45</uuid>
+                    <name>[Tuner] RDS Level</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.17.0</snmp_oid>
+                    <key>DB45.RDS.LVL</key>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <value_type>FLOAT</value_type>
+                    <units>kHz</units>
+                    <description>RDS Level.
+Standard is 2.4kHz</description>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>return Math.round((value / 256) * 100) / 100;</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <uuid>69ff882884e84b0291bb7e75d7c67283</uuid>
+                    <name>[RDS] PI</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.40.0</snmp_oid>
+                    <key>DB45.RDSPi</key>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Radio Data System: Programme Identification</description>
+                    <tags>
+                        <tag>
+                            <tag>FM Monitoring</tag>
+                            <value>RDS</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>7e4746b4c49e4b218709c5969c2cb014</uuid>
+                    <name>[RDS] PS</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.41.0</snmp_oid>
+                    <key>DB45.RDSPs</key>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Radio Data System: Program Service Name</description>
+                    <tags>
+                        <tag>
+                            <tag>FM Monitoring</tag>
+                            <value>RDS</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>151a8745c66f44b7a9af6d13d2adca3e</uuid>
+                    <name>[RDS] PTY</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.46.0</snmp_oid>
+                    <key>DB45.RDSPTY</key>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Radio System Data: Programme TYpe</description>
+                    <preprocessing>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <parameters>
+                                <parameter>10</parameter>
+                                <parameter>Pop Music</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <uuid>d4172021e3d94a19ac68d2e5460c19d2</uuid>
+                    <name>[RDS] RT</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.42.0</snmp_oid>
+                    <key>DB45.RDSRT</key>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                </item>
+                <item>
+                    <uuid>758882c5978343e9ab6b3c81025d562d</uuid>
+                    <name>[RDS] TA</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.43.0</snmp_oid>
+                    <key>DB45.RDSTA</key>
+                    <delay>2m</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <status>DISABLED</status>
+                    <value_type>TEXT</value_type>
+                    <description>Traffic Announce
+1 = OFF
+2 = ON</description>
+                    <preprocessing>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <parameters>
+                                <parameter>1</parameter>
+                                <parameter>OFF</parameter>
+                            </parameters>
+                        </step>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <parameters>
+                                <parameter>2</parameter>
+                                <parameter>ON</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <uuid>5f6adf60128d4bdf80b2ae644ae4d884</uuid>
+                    <name>[RDS] TP</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.44.0</snmp_oid>
+                    <key>DB45.RDSTP</key>
+                    <delay>2m</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <status>DISABLED</status>
+                    <value_type>TEXT</value_type>
+                    <description>Traffic Announce
+1 = OFF
+2 = ON</description>
+                    <preprocessing>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <parameters>
+                                <parameter>1</parameter>
+                                <parameter>OFF</parameter>
+                            </parameters>
+                        </step>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <parameters>
+                                <parameter>2</parameter>
+                                <parameter>ON</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <uuid>a6d6b4e4135544648660ccfed0f7b35d</uuid>
+                    <name>[Tuner] RF Signal</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.2.0</snmp_oid>
+                    <key>DB45.RFValue</key>
+                    <trends>0</trends>
+                    <value_type>FLOAT</value_type>
+                    <units>dBμV</units>
+                    <description>RF Level Signal</description>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>return Math.round((value / 256) * 100) / 100;</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <tags>
+                        <tag>
+                            <tag>FM MONITORING</tag>
+                            <value>RF Signal</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>ae7dfd067a524d9ba3f1e7654093c2e9</uuid>
+                    <name>[Audio] LVL Right Channel</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.23.0</snmp_oid>
+                    <key>DB45.RightValue</key>
+                    <delay>30s</delay>
+                    <history>30d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>dBFs</units>
+                    <description>Audio signal from Right channel</description>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>return Math.round((value / 256) * 100) / 100;</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <tags>
+                        <tag>
+                            <tag>FM MONITORING</tag>
+                            <value>Audio Signal</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>0e70a7c9d49f497793275a840c0f2bda</uuid>
+                    <name>[Device] Serial Number</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.1.2.0</snmp_oid>
+                    <key>DB45.SerNum</key>
+                    <delay>1d</delay>
+                    <history>10d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                </item>
+                <item>
+                    <uuid>91b592b9a8544eeaa67c1d56f00fda42</uuid>
+                    <name>[Device] Temperature</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.35833.31.3.32.0</snmp_oid>
+                    <key>DB45.TempValue</key>
+                    <delay>5m</delay>
+                    <history>10d</history>
+                    <trends>90d</trends>
+                    <value_type>FLOAT</value_type>
+                    <units>C</units>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <parameters>
+                                <parameter>return Math.round((value / 256) * 100) / 100;</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <uuid>f1aec61e2046402b825c16c0e1c942a2</uuid>
+                            <expression>last(/DEVA-DB45_Templates/DB45.TempValue)&gt;=55</expression>
+                            <name>[Temp] Device is overheat</name>
+                            <priority>DISASTER</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+        </template>
+    </templates>
+    <triggers>
+        <trigger>
+            <uuid>fe585f048766450cae14f597804e0a69</uuid>
+            <expression>last(/DEVA-DB45_Templates/DB45.Freq)=100.1 and last(/DEVA-DB45_Templates/DB45.RDSPi)&lt;&gt;0000</expression>
+            <name>CHANGE RDS PI</name>
+            <status>DISABLED</status>
+            <priority>HIGH</priority>
+            <type>MULTIPLE</type>
+        </trigger>
+        <trigger>
+            <uuid>d25a0e063aa4470eaecae9a0aeb53e89</uuid>
+            <expression>last(/DEVA-DB45_Templates/DB45.Freq)=101.1 and last(/DEVA-DB45_Templates/DB45.RDSPs)&lt;&gt;0000</expression>
+            <name>CHANGE RDS PS</name>
+            <status>DISABLED</status>
+            <priority>HIGH</priority>
+            <type>MULTIPLE</type>
+        </trigger>
+        <trigger>
+            <uuid>d90f80f342e24f4580ad16c86d555a12</uuid>
+            <expression>last(/DEVA-DB45_Templates/DB45.Freq)=101.1 and last(/DEVA-DB45_Templates/DB45.RDSPTY)&lt;&gt;&quot;Pop Music&quot;</expression>
+            <name>CHANGE RDS PTY</name>
+            <status>DISABLED</status>
+            <priority>AVERAGE</priority>
+            <type>MULTIPLE</type>
+        </trigger>
+    </triggers>
+</zabbix_export>
