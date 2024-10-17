@@ -1,4 +1,4 @@
-# Zabbix Template for Deva Broadcast DB4005
+# Zabbix Template for Deva Broadcast DB45
 
 ## Overview
 This repository contains a Zabbix template for monitoring the **Deva Broadcast DB45** FM monitoring receiver. The template allows you to easily integrate the device with Zabbix and collect key metrics for real-time monitoring and alerting.
