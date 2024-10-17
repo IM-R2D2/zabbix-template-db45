@@ -44,7 +44,7 @@ The template includes the following metrics:
 
 ### Triggers
 - **Frequency**: Triggered if the frequency is outside the desired range.
-- **LOST AUDIO. Average level < -40dB FS**: Triggered if average audio level falls below -40dB.
+- **LOST AUDIO. Average level < -50dB FS**: Triggered if average audio level falls below -50dB.
 - **Loudness (LUFS)**: Triggered if loudness level is less than or equal to -12 LUFS.
 - **MULTIPATH**: Triggered if multipath value.
 - **RDS PI**: Triggered if RDS PI value is outside the desired range.
